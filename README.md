@@ -15,7 +15,7 @@ Uma UI Library universal e moderna para scripts Roblox, otimizada para executors
 
 ```lua
 -- Carregar a library
-local MultiUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SEU-USER/MultiUI-Library/main/UILibrary.lua"))()
+local MultiUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Allanursulino/MultiUI-Library/main/UILibrary.lua"))()
 
 -- Inicializar
 local UI = MultiUI:CreateGUI()
