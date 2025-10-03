@@ -61,10 +61,10 @@ function MultiUI:CreateGUI()
 
     -- ScreenGui principal
     self.ScreenGui = self:CreateElement("ScreenGui", {
-        Name = "AnimeEternalMultiHub",
-        DisplayOrder = 999,
-        ResetOnSpawn = false
-    })
+    Name = "MultiUILibrary",  -- NOME CORRIGIDO AQUI
+    DisplayOrder = 999,
+    ResetOnSpawn = false
+})
 
     -- Container principal
     self.MainContainer = self:CreateElement("Frame", {
@@ -95,17 +95,17 @@ function MultiUI:CreateGUI()
 
     -- Título do header
     self.Title = self:CreateElement("TextLabel", {
-        Name = "Title",
-        Size = UDim2.new(1, -100, 1, 0),
-        Position = UDim2.new(0, 15, 0, 0),
-        BackgroundTransparency = 1,
-        Text = "Anime Eternal MultiHub",
-        TextColor3 = self.Theme.TextPrimary,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.GothamBold,
-        TextSize = 16,
-        Parent = self.Header
-    })
+    Name = "Title",
+    Size = UDim2.new(1, -100, 1, 0),
+    Position = UDim2.new(0, 15, 0, 0),
+    BackgroundTransparency = 1,
+    Text = "MultiUI Library",  -- NOME CORRIGIDO AQUI
+    TextColor3 = self.Theme.TextPrimary,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Font = Enum.Font.GothamBold,
+    TextSize = 16,
+    Parent = self.Header
+})
 
     -- Botões de controle da janela
     self.ControlButtons = self:CreateElement("Frame", {
