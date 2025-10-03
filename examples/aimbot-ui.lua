@@ -1,5 +1,5 @@
 -- Exemplo: UI para Aimbot usando MultiUI Library
-local MultiUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SEU-USER/MultiUI-Library/main/UILibrary.lua"))()
+local MultiUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Allanursulino/MultiUI-Library/main/UILibrary.lua"))()
 
 -- Inicializar UI
 local UI = MultiUI:CreateGUI()
