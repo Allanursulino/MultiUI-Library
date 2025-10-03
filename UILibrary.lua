@@ -432,13 +432,13 @@ function MultiUI:UpdateTabButtons(activeTab)
             local isActive = tab.Name == activeTab
             local tabButton = self:CreateElement("TextButton", {
                 Name = tab.Name .. "Button",
-                Size = UDim2.new(0, 80, 1, 0),
+                Size = UDim2.new(0, 70, 1, 0),  -- Largura reduzida
                 BackgroundColor3 = isActive and self.Theme.Accent or self.Theme.Secondary,
                 BorderSizePixel = 0,
                 Text = tab.Name,
                 TextColor3 = self.Theme.Text,
                 Font = Enum.Font.GothamBold,
-                TextSize = 12,
+                TextSize = 11,  -- Texto menor
                 Parent = self.TabButtonsFrame
             })
             
