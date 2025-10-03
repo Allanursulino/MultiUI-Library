@@ -1,15 +1,15 @@
 --[[
-   Delta UI Library v1.0
-   Otimizada para executors
+   MultiUI Library v1.0
+   UI Library universal para executors
    Por [Seu Nome]
 --]]
 
-local DeltaUI = {}
-DeltaUI.__index = DeltaUI
+local MultiUI = {}
+MultiUI.__index = MultiUI
 
 -- Configurações globais
-DeltaUI.ToggleUIKey = Enum.KeyCode.RightControl
-DeltaUI.Theme = {
+MultiUI.ToggleUIKey = Enum.KeyCode.RightControl
+MultiUI.Theme = {
     Main = Color3.fromRGB(25, 25, 25),
     Secondary = Color3.fromRGB(40, 40, 40),
     Accent = Color3.fromRGB(0, 120, 215),
@@ -30,7 +30,7 @@ local player = Players.LocalPlayer
 local mouse = player:GetMouse()
 
 -- Função para criar elementos UI rapidamente
-function DeltaUI:CreateElement(className, properties)
+function MultiUI:CreateElement(className, properties)
     local element = Instance.new(className)
     for property, value in pairs(properties) do
         element[property] = value
@@ -39,13 +39,13 @@ function DeltaUI:CreateElement(className, properties)
 end
 
 -- Criar a GUI principal
-function DeltaUI:CreateGUI()
+function MultiUI:CreateGUI()
     if self.ScreenGui then
         self.ScreenGui:Destroy()
     end
 
     self.ScreenGui = self:CreateElement("ScreenGui", {
-        Name = "DeltaUIMain",
+        Name = "MultiUIMain",
         DisplayOrder = 999,
         ResetOnSpawn = false
     })
@@ -73,7 +73,7 @@ function DeltaUI:CreateGUI()
         Size = UDim2.new(1, -60, 1, 0),
         Position = UDim2.new(0, 10, 0, 0),
         BackgroundTransparency = 1,
-        Text = "Delta UI Library",
+        Text = "MultiUI Library",
         TextColor3 = self.Theme.Text,
         TextXAlignment = Enum.TextXAlignment.Left,
         Font = Enum.Font.GothamBold,
@@ -113,7 +113,7 @@ function DeltaUI:CreateGUI()
 end
 
 -- Configurar eventos da UI
-function DeltaUI:SetupEvents()
+function MultiUI:SetupEvents()
     -- Fechar UI
     self.CloseButton.MouseButton1Click:Connect(function()
         self:ToggleUI()
@@ -131,7 +131,7 @@ function DeltaUI:SetupEvents()
 end
 
 -- Função para arrastar a janela
-function DeltaUI:MakeDraggable(dragPart, mainPart)
+function MultiUI:MakeDraggable(dragPart, mainPart)
     local dragging = false
     local dragInput, dragStart, startPos
 
@@ -173,14 +173,14 @@ function DeltaUI:MakeDraggable(dragPart, mainPart)
 end
 
 -- Toggle mostrar/esconder UI
-function DeltaUI:ToggleUI()
+function MultiUI:ToggleUI()
     if self.MainFrame then
         self.MainFrame.Visible = not self.MainFrame.Visible
     end
 end
 
 -- Mostrar notificação
-function DeltaUI:Notify(message, type)
+function MultiUI:Notify(message, type)
     type = type or "Info"
     
     -- Criar notificação
@@ -239,4 +239,23 @@ function DeltaUI:Notify(message, type)
     end)
 end
 
-return DeltaUI
+-- Função para criar botão (vamos expandir depois)
+function MultiUI:CreateButton(name, callback)
+    local button = self:CreateElement("TextButton", {
+        Name = name,
+        Size = UDim2.new(1, -20, 0, 35),
+        Position = UDim2.new(0, 10, 0, 0),
+        BackgroundColor3 = self.Theme.Accent,
+        BorderSizePixel = 0,
+        Text = name,
+        TextColor3 = self.Theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = 14,
+        Parent = self.TabContainer
+    })
+
+    button.MouseButton1Click:Connect(callback)
+    return button
+end
+
+return MultiUI
