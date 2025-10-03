@@ -1,6 +1,6 @@
 --[[
-   🎮 MultiUI Library - Modern Edition
-   UI moderna com animações e design elegante
+   🎮 MultiUI Library - Professional Edition
+   Intro com efeito de digitação + Interface limpa
    Por Allanursulino
 --]]
 
@@ -10,34 +10,25 @@ MultiUI.__index = MultiUI
 -- Configurações
 MultiUI.ToggleUIKey = Enum.KeyCode.RightControl
 
--- Tema Moderno Vermelho/Preto
+-- Tema Profissional
 MultiUI.Theme = {
-    -- Cores principais
-    Background = Color3.fromRGB(10, 10, 10),      -- Preto profundo
-    Surface = Color3.fromRGB(20, 20, 20),         -- Superfície escura
-    SurfaceLight = Color3.fromRGB(30, 30, 30),    -- Superfície clara
-    
-    -- Cores de acento
-    Primary = Color3.fromRGB(220, 20, 60),        -- Vermelho vibrante
-    PrimaryHover = Color3.fromRGB(240, 40, 80),   -- Vermelho hover
-    PrimaryGlow = Color3.fromRGB(255, 80, 80),    -- Glow vermelho
-    
-    -- Texto
-    TextPrimary = Color3.fromRGB(255, 255, 255),  -- Branco puro
-    TextSecondary = Color3.fromRGB(200, 200, 200),-- Cinza claro
-    TextAccent = Color3.fromRGB(255, 100, 100),   -- Texto acento
-    
-    -- Estados
-    Success = Color3.fromRGB(80, 200, 120),
-    Warning = Color3.fromRGB(255, 180, 60),
-    Error = Color3.fromRGB(220, 80, 80)
+    Background = Color3.fromRGB(13, 17, 23),      -- Fundo escuro azulado
+    Surface = Color3.fromRGB(22, 27, 34),         -- Superfície
+    SurfaceLight = Color3.fromRGB(33, 38, 45),    -- Superfície clara
+    Primary = Color3.fromRGB(88, 166, 255),       -- Azul profissional
+    PrimaryHover = Color3.fromRGB(108, 182, 255), -- Azul hover
+    TextPrimary = Color3.fromRGB(248, 250, 252),  -- Branco suave
+    TextSecondary = Color3.fromRGB(139, 148, 158),-- Cinza texto
+    Border = Color3.fromRGB(48, 54, 61),          -- Bordas
+    Success = Color3.fromRGB(87, 171, 90),        -- Verde
+    Warning = Color3.fromRGB(215, 158, 0),        -- Amarelo
+    Error = Color3.fromRGB(248, 81, 73)           -- Vermelho
 }
 
 -- Serviços
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 
 -- Variáveis
 local player = Players.LocalPlayer
@@ -51,81 +42,63 @@ function MultiUI:CreateElement(className, properties)
     return element
 end
 
--- Criar efeito de glow
-function MultiUI:AddGlow(frame, color)
-    local glow = self:CreateElement("UIStroke", {
-        Color = color or self.Theme.PrimaryGlow,
-        Thickness = 2,
-        Transparency = 0.8,
-        Parent = frame
-    })
-    return glow
+-- Efeito de digitação (letra por letra)
+function MultiUI:TypewriterEffect(label, text, speed, callback)
+    label.Text = ""
+    local currentText = ""
+    
+    for i = 1, #text do
+        currentText = currentText .. string.sub(text, i, i)
+        label.Text = currentText
+        wait(speed or 0.05)
+    end
+    
+    if callback then
+        callback()
+    end
 end
 
--- Criar sombra
-function MultiUI:AddShadow(frame)
-    local shadow = self:CreateElement("ImageLabel", {
-        Name = "Shadow",
-        Size = UDim2.new(1, 20, 1, 20),
-        Position = UDim2.new(0, -10, 0, -10),
-        BackgroundTransparency = 1,
-        Image = "rbxassetid://5554236805",
-        ImageColor3 = Color3.new(0, 0, 0),
-        ImageTransparency = 0.8,
-        ScaleType = Enum.ScaleType.Slice,
-        SliceCenter = Rect.new(23, 23, 277, 277),
-        Parent = frame
-    })
-    return shadow
-end
-
--- Animação de entrada da UI
+-- Intro com efeito de digitação
 function MultiUI:ShowIntroAnimation(callback)
-    -- Tela de introdução
+    -- Tela de intro transparente
     local introFrame = self:CreateElement("Frame", {
         Name = "IntroFrame",
         Size = UDim2.new(1, 0, 1, 0),
-        BackgroundColor3 = self.Theme.Background,
+        BackgroundColor3 = Color3.new(0, 0, 0),
+        BackgroundTransparency = 0.3, -- Fundo semi-transparente
         BorderSizePixel = 0,
         Parent = self.ScreenGui
     })
 
-    -- Logo/Texto da intro
+    -- Texto da intro
     local introText = self:CreateElement("TextLabel", {
         Name = "IntroText",
-        Size = UDim2.new(0, 300, 0, 80),
-        Position = UDim2.new(0.5, -150, 0.5, -40),
+        Size = UDim2.new(0, 400, 0, 100),
+        Position = UDim2.new(0.5, -200, 0.5, -50),
         BackgroundTransparency = 1,
-        Text = "MultiUI",
-        TextColor3 = self.Theme.Primary,
+        Text = "",
+        TextColor3 = Color3.fromRGB(255, 255, 255),
         TextScaled = true,
         Font = Enum.Font.GothamBlack,
         TextSize = 48,
-        TextStrokeTransparency = 0.8,
+        TextStrokeTransparency = 0.5,
         Parent = introFrame
     })
 
-    -- Adicionar glow na intro
-    self:AddGlow(introText, self.Theme.PrimaryGlow)
-
-    -- Animação de fade in
-    introText.TextTransparency = 1
-    local fadeIn = TweenService:Create(introText, TweenInfo.new(1), {
-        TextTransparency = 0
-    })
-    fadeIn:Play()
-
-    -- Esperar e fazer fade out
-    wait(1.5)
-    
-    local fadeOut = TweenService:Create(introText, TweenInfo.new(0.8), {
-        TextTransparency = 1
-    })
-    fadeOut:Play()
-
-    fadeOut.Completed:Connect(function()
-        introFrame:Destroy()
-        if callback then callback() end
+    -- Efeito de digitação
+    self:TypewriterEffect(introText, "MultiUI", 0.1, function()
+        wait(1) -- Manter texto por 1 segundo
+        
+        -- Fade out suave
+        local fadeOut = TweenService:Create(introFrame, TweenInfo.new(0.8), {
+            BackgroundTransparency = 1
+        })
+        fadeOut:Play()
+        
+        fadeOut.Completed:Connect(function()
+            introFrame:Destroy()
+            if callback then callback() end
+        end)
     end)
 end
 
@@ -137,12 +110,12 @@ function MultiUI:CreateGUI()
 
     -- ScreenGui principal
     self.ScreenGui = self:CreateElement("ScreenGui", {
-        Name = "MultiUIModern",
+        Name = "MultiUIProfessional",
         DisplayOrder = 999,
         ResetOnSpawn = false
     })
 
-    -- Mostrar animação de intro primeiro
+    -- Mostrar intro primeiro
     self:ShowIntroAnimation(function()
         self:CreateMainInterface()
     end)
@@ -152,74 +125,39 @@ function MultiUI:CreateGUI()
     return self
 end
 
--- Criar interface principal após intro
+-- Criar interface principal (estilo da 3ª imagem)
 function MultiUI:CreateMainInterface()
-    -- Container principal com bordas arredondadas
+    -- Container principal (estilo profissional)
     self.MainContainer = self:CreateElement("Frame", {
         Name = "MainContainer",
-        Size = UDim2.new(0, 650, 0, 500),
-        Position = UDim2.new(0.5, -325, 0.5, -250),
-        BackgroundColor3 = self.Theme.Surface,
-        BorderSizePixel = 0,
+        Size = UDim2.new(0, 700, 0, 550), -- Tamanho maior para mais conteúdo
+        Position = UDim2.new(0.5, -350, 0.5, -275),
+        BackgroundColor3 = self.Theme.Background,
+        BorderSizePixel = 1,
+        BorderColor3 = self.Theme.Border,
         ClipsDescendants = true,
+        Visible = false, -- Inicia invisível
         Parent = self.ScreenGui
     })
 
-    -- Adicionar sombra
-    self:AddShadow(self.MainContainer)
-
-    -- Adicionar borda glow
-    self:AddGlow(self.MainContainer)
-
-    -- Header moderno
+    -- Header limpo (sem título)
     self.Header = self:CreateElement("Frame", {
         Name = "Header",
-        Size = UDim2.new(1, 0, 0, 60),
-        BackgroundColor3 = self.Theme.Background,
-        BorderSizePixel = 0,
-        Parent = self.MainContainer
-    })
-
-    -- Título com estilo moderno
-    self.Title = self:CreateElement("TextLabel", {
-        Name = "Title",
-        Size = UDim2.new(1, -120, 1, 0),
-        Position = UDim2.new(0, 20, 0, 0),
-        BackgroundTransparency = 1,
-        Text = "MultiUI Library",
-        TextColor3 = self.Theme.Primary,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.GothamBlack,
-        TextSize = 18,
-        TextStrokeTransparency = 0.7,
-        Parent = self.Header
-    })
-
-    -- Botão fechar moderno
-    self.CloseButton = self:CreateElement("TextButton", {
-        Name = "CloseButton",
-        Size = UDim2.new(0, 30, 0, 30),
-        Position = UDim2.new(1, -40, 0.5, -15),
+        Size = UDim2.new(1, 0, 0, 5), -- Header mínimo
         BackgroundColor3 = self.Theme.Primary,
         BorderSizePixel = 0,
-        Text = "×",
-        TextColor3 = self.Theme.TextPrimary,
-        Font = Enum.Font.GothamBold,
-        TextSize = 20,
-        Parent = self.Header
-    })
-
-    -- Área de navegação
-    self.NavArea = self:CreateElement("Frame", {
-        Name = "NavArea",
-        Size = UDim2.new(1, -40, 0, 50),
-        Position = UDim2.new(0, 20, 0, 70),
-        BackgroundColor3 = self.Theme.SurfaceLight,
-        BorderSizePixel = 0,
         Parent = self.MainContainer
     })
 
-    -- Container de tabs
+    -- Área de navegação (tabs estilo profissional)
+    self.NavArea = self:CreateElement("Frame", {
+        Name = "NavArea",
+        Size = UDim2.new(1, -30, 0, 40),
+        Position = UDim2.new(0, 15, 0, 15),
+        BackgroundTransparency = 1,
+        Parent = self.MainContainer
+    })
+
     self.TabsContainer = self:CreateElement("Frame", {
         Name = "TabsContainer",
         Size = UDim2.new(1, 0, 1, 0),
@@ -229,39 +167,28 @@ function MultiUI:CreateMainInterface()
 
     self.TabsLayout = self:CreateElement("UIListLayout", {
         FillDirection = Enum.FillDirection.Horizontal,
-        Padding = UDim.new(0, 10),
+        Padding = UDim.new(0, 8),
         Parent = self.TabsContainer
     })
 
-    -- Área de conteúdo
+    -- Área de conteúdo principal
     self.ContentArea = self:CreateElement("Frame", {
         Name = "ContentArea",
-        Size = UDim2.new(1, -40, 1, -140),
-        Position = UDim2.new(0, 20, 0, 130),
+        Size = UDim2.new(1, -30, 1, -70),
+        Position = UDim2.new(0, 15, 0, 65),
         BackgroundTransparency = 1,
         Parent = self.MainContainer
     })
 
     -- Configurar eventos
     self:SetupEvents()
+    
+    -- Mostrar UI após criar
+    self.MainContainer.Visible = true
 end
 
 -- Configurar eventos
 function MultiUI:SetupEvents()
-    -- Fechar UI
-    self.CloseButton.MouseButton1Click:Connect(function()
-        self.MainContainer.Visible = false
-    end)
-
-    -- Efeitos hover
-    self.CloseButton.MouseEnter:Connect(function()
-        self.CloseButton.BackgroundColor3 = self.Theme.PrimaryHover
-    end)
-
-    self.CloseButton.MouseLeave:Connect(function()
-        self.CloseButton.BackgroundColor3 = self.Theme.Primary
-    end)
-
     -- Toggle com tecla
     UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == self.ToggleUIKey then
@@ -269,7 +196,7 @@ function MultiUI:SetupEvents()
         end
     end)
 
-    -- Sistema de drag
+    -- Sistema de drag pelo header
     self:MakeDraggable(self.Header, self.MainContainer)
 end
 
@@ -303,42 +230,43 @@ function MultiUI:MakeDraggable(dragPart, mainPart)
     end)
 end
 
--- Sistema de Tabs moderno
+-- Sistema de Tabs profissional
 function MultiUI:CreateTab(tabName)
     if not self.Tabs then
         self.Tabs = {}
         self.TabContents = {}
     end
 
-    -- Criar botão da tab moderna
+    -- Botão da tab (estilo profissional)
     local tabButton = self:CreateElement("TextButton", {
         Name = tabName .. "Tab",
         Size = UDim2.new(0, 120, 1, 0),
         BackgroundColor3 = self.Theme.Surface,
-        BorderSizePixel = 0,
+        BorderColor3 = self.Theme.Border,
+        BorderSizePixel = 1,
         Text = tabName,
         TextColor3 = self.Theme.TextSecondary,
-        Font = Enum.Font.GothamSemibold,
+        Font = Enum.Font.GothamMedium,
         TextSize = 13,
         AutoButtonColor = false,
         Parent = self.TabsContainer
     })
 
-    -- Criar conteúdo da tab
+    -- Conteúdo da tab
     local tabContent = self:CreateElement("ScrollingFrame", {
         Name = tabName .. "Content",
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        ScrollBarThickness = 5,
+        ScrollBarThickness = 4,
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         Visible = false,
         Parent = self.ContentArea
     })
 
-    -- Layout para organizar elementos
+    -- Layout organizado
     local layout = self:CreateElement("UIListLayout", {
-        Padding = UDim.new(0, 15),
+        Padding = UDim.new(0, 12),
         Parent = tabContent
     })
 
@@ -352,27 +280,25 @@ function MultiUI:CreateTab(tabName)
     table.insert(self.Tabs, tabData)
     self.TabContents[tabName] = tabContent
 
-    -- Evento de clique na tab
+    -- Eventos da tab
     tabButton.MouseButton1Click:Connect(function()
         self:SwitchToTab(tabName)
     end)
 
-    -- Efeitos hover na tab
+    -- Efeitos hover
     tabButton.MouseEnter:Connect(function()
         if self.CurrentTab ~= tabName then
             tabButton.BackgroundColor3 = self.Theme.SurfaceLight
-            tabButton.TextColor3 = self.Theme.TextPrimary
         end
     end)
 
     tabButton.MouseLeave:Connect(function()
         if self.CurrentTab ~= tabName then
             tabButton.BackgroundColor3 = self.Theme.Surface
-            tabButton.TextColor3 = self.Theme.TextSecondary
         end
     end)
 
-    -- Se for a primeira tab, ativar
+    -- Primeira tab ativa
     if #self.Tabs == 1 then
         self:SwitchToTab(tabName)
     end
@@ -382,14 +308,15 @@ end
 
 -- Mudar para tab
 function MultiUI:SwitchToTab(tabName)
-    -- Desativar todas as tabs
+    -- Desativar todas
     for _, tab in pairs(self.Tabs) do
         tab.Content.Visible = false
         tab.Button.BackgroundColor3 = self.Theme.Surface
         tab.Button.TextColor3 = self.Theme.TextSecondary
+        tab.Button.BorderSizePixel = 1
     end
 
-    -- Ativar tab selecionada
+    -- Ativar selecionada
     local targetTab = self.TabContents[tabName]
     if targetTab then
         targetTab.Visible = true
@@ -397,40 +324,39 @@ function MultiUI:SwitchToTab(tabName)
             if tab.Name == tabName then
                 tab.Button.BackgroundColor3 = self.Theme.Primary
                 tab.Button.TextColor3 = self.Theme.TextPrimary
+                tab.Button.BorderSizePixel = 0
             end
         end
         self.CurrentTab = tabName
     end
 end
 
--- Criar seção moderna
+-- Criar seção (estilo da 3ª imagem)
 function MultiUI:CreateSection(tab, sectionName)
     local section = self:CreateElement("Frame", {
         Name = sectionName .. "Section",
-        Size = UDim2.new(1, 0, 0, 50),
-        BackgroundColor3 = self.Theme.SurfaceLight,
-        BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 0, 60),
+        BackgroundColor3 = self.Theme.Surface,
+        BorderColor3 = self.Theme.Border,
+        BorderSizePixel = 1,
         Parent = tab.Content
     })
-
-    -- Adicionar borda glow
-    self:AddGlow(section)
 
     -- Título da seção
     local title = self:CreateElement("TextLabel", {
         Name = "Title",
-        Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 5),
+        Size = UDim2.new(1, -20, 0, 25),
+        Position = UDim2.new(0, 10, 0, 8),
         BackgroundTransparency = 1,
         Text = sectionName,
-        TextColor3 = self.Theme.Primary,
+        TextColor3 = self.Theme.TextPrimary,
         TextXAlignment = Enum.TextXAlignment.Left,
         Font = Enum.Font.GothamBold,
         TextSize = 14,
         Parent = section
     })
 
-    -- Container para elementos da seção
+    -- Container de conteúdo
     local contentContainer = self:CreateElement("Frame", {
         Name = "Content",
         Size = UDim2.new(1, -20, 1, -40),
@@ -440,19 +366,60 @@ function MultiUI:CreateSection(tab, sectionName)
     })
 
     local contentLayout = self:CreateElement("UIListLayout", {
-        Padding = UDim.new(0, 10),
+        Padding = UDim.new(0, 8),
         Parent = contentContainer
     })
 
-    -- Atualizar altura automaticamente
+    -- Altura automática
     contentLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        section.Size = UDim2.new(1, 0, 0, contentLayout.AbsoluteContentSize.Y + 50)
+        section.Size = UDim2.new(1, 0, 0, contentLayout.AbsoluteContentSize.Y + 45)
     end)
 
     return contentContainer
 end
 
--- Componente Toggle moderno
+-- Criar linha de informação (como "Total All Pets: 4131")
+function MultiUI:CreateInfoRow(tab, label, value)
+    local row = self:CreateElement("Frame", {
+        Name = "InfoRow",
+        Size = UDim2.new(1, 0, 0, 25),
+        BackgroundTransparency = 1,
+        Parent = tab.Content
+    })
+
+    local labelText = self:CreateElement("TextLabel", {
+        Name = "Label",
+        Size = UDim2.new(0.6, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = label,
+        TextColor3 = self.Theme.TextSecondary,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Font = Enum.Font.Gotham,
+        TextSize = 12,
+        Parent = row
+    })
+
+    local valueText = self:CreateElement("TextLabel", {
+        Name = "Value",
+        Size = UDim2.new(0.4, 0, 1, 0),
+        Position = UDim2.new(0.6, 0, 0, 0),
+        BackgroundTransparency = 1,
+        Text = tostring(value),
+        TextColor3 = self.Theme.TextPrimary,
+        TextXAlignment = Enum.TextXAlignment.Right,
+        Font = Enum.Font.GothamMedium,
+        TextSize = 12,
+        Parent = row
+    })
+
+    return {
+        Update = function(newValue)
+            valueText.Text = tostring(newValue)
+        end
+    }
+end
+
+-- Componente Toggle profissional
 function MultiUI:CreateToggle(section, options)
     options = options or {}
     
@@ -477,23 +444,21 @@ function MultiUI:CreateToggle(section, options)
 
     local toggleButton = self:CreateElement("TextButton", {
         Name = "ToggleButton",
-        Size = UDim2.new(0, 50, 0, 25),
-        Position = UDim2.new(1, -50, 0, 2),
-        BackgroundColor3 = self.Theme.Surface,
-        BorderSizePixel = 0,
+        Size = UDim2.new(0, 45, 0, 22),
+        Position = UDim2.new(1, -45, 0, 4),
+        BackgroundColor3 = self.Theme.SurfaceLight,
+        BorderColor3 = self.Theme.Border,
+        BorderSizePixel = 1,
         Text = "",
         AutoButtonColor = false,
         Parent = toggleFrame
     })
 
-    -- Adicionar borda ao toggle
-    self:AddGlow(toggleButton)
-
     local toggleIndicator = self:CreateElement("Frame", {
         Name = "Indicator",
-        Size = UDim2.new(0, 21, 0, 21),
+        Size = UDim2.new(0, 18, 0, 18),
         Position = UDim2.new(0, 2, 0, 2),
-        BackgroundColor3 = Color3.fromRGB(100, 100, 100),
+        BackgroundColor3 = self.Theme.TextSecondary,
         BorderSizePixel = 0,
         Parent = toggleButton
     })
@@ -502,13 +467,15 @@ function MultiUI:CreateToggle(section, options)
 
     local function updateToggle()
         if state then
-            toggleIndicator:TweenPosition(UDim2.new(1, -23, 0, 2), "Out", "Quad", 0.2)
-            toggleIndicator.BackgroundColor3 = self.Theme.Primary
-            toggleButton.BackgroundColor3 = self.Theme.Primary
+            toggleIndicator:TweenPosition(UDim2.new(1, -20, 0, 2), "Out", "Quad", 0.15)
+            toggleIndicator.BackgroundColor3 = self.Theme.Success
+            toggleButton.BackgroundColor3 = self.Theme.Success
+            toggleButton.BorderSizePixel = 0
         else
-            toggleIndicator:TweenPosition(UDim2.new(0, 2, 0, 2), "Out", "Quad", 0.2)
-            toggleIndicator.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-            toggleButton.BackgroundColor3 = self.Theme.Surface
+            toggleIndicator:TweenPosition(UDim2.new(0, 2, 0, 2), "Out", "Quad", 0.15)
+            toggleIndicator.BackgroundColor3 = self.Theme.TextSecondary
+            toggleButton.BackgroundColor3 = self.Theme.SurfaceLight
+            toggleButton.BorderSizePixel = 1
         end
     end
 
@@ -533,41 +500,41 @@ function MultiUI:CreateToggle(section, options)
     }
 end
 
--- Componente Button moderno
+-- Componente Button profissional
 function MultiUI:CreateButton(section, options)
     options = options or {}
     
     local button = self:CreateElement("TextButton", {
         Name = "Button_" .. options.Name,
-        Size = UDim2.new(1, 0, 0, 40),
-        BackgroundColor3 = self.Theme.Primary,
-        BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 0, 35),
+        BackgroundColor3 = self.Theme.SurfaceLight,
+        BorderColor3 = self.Theme.Border,
+        BorderSizePixel = 1,
         Text = options.Name or "Button",
         TextColor3 = self.Theme.TextPrimary,
-        Font = Enum.Font.GothamSemibold,
-        TextSize = 14,
+        Font = Enum.Font.GothamMedium,
+        TextSize = 13,
         AutoButtonColor = false,
         Parent = section
     })
 
-    -- Adicionar glow
-    self:AddGlow(button)
-
     -- Efeitos hover
     button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = self.Theme.PrimaryHover
+        button.BackgroundColor3 = self.Theme.Primary
+        button.BorderSizePixel = 0
     end)
 
     button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = self.Theme.Primary
+        button.BackgroundColor3 = self.Theme.SurfaceLight
+        button.BorderSizePixel = 1
     end)
 
     button.MouseButton1Down:Connect(function()
-        button.BackgroundColor3 = self.Theme.PrimaryHover:Lerp(Color3.new(0, 0, 0), 0.3)
+        button.BackgroundColor3 = self.Theme.PrimaryHover
     end)
 
     button.MouseButton1Up:Connect(function()
-        button.BackgroundColor3 = self.Theme.PrimaryHover
+        button.BackgroundColor3 = self.Theme.Primary
     end)
 
     -- Callback
@@ -578,20 +545,20 @@ function MultiUI:CreateButton(section, options)
     return button
 end
 
--- Componente Slider moderno
+-- Componente Slider profissional
 function MultiUI:CreateSlider(section, options)
     options = options or {}
     
     local sliderFrame = self:CreateElement("Frame", {
         Name = "Slider_" .. options.Name,
-        Size = UDim2.new(1, 0, 0, 60),
+        Size = UDim2.new(1, 0, 0, 55),
         BackgroundTransparency = 1,
         Parent = section
     })
 
     local labelRow = self:CreateElement("Frame", {
         Name = "LabelRow",
-        Size = UDim2.new(1, 0, 0, 25),
+        Size = UDim2.new(1, 0, 0, 20),
         BackgroundTransparency = 1,
         Parent = sliderFrame
     })
@@ -616,22 +583,20 @@ function MultiUI:CreateSlider(section, options)
         Text = tostring(options.Default or options.Min or 0),
         TextColor3 = self.Theme.Primary,
         TextXAlignment = Enum.TextXAlignment.Right,
-        Font = Enum.Font.GothamBold,
+        Font = Enum.Font.GothamMedium,
         TextSize = 13,
         Parent = labelRow
     })
 
     local sliderTrack = self:CreateElement("Frame", {
         Name = "Track",
-        Size = UDim2.new(1, 0, 0, 20),
+        Size = UDim2.new(1, 0, 0, 18),
         Position = UDim2.new(0, 0, 0, 30),
-        BackgroundColor3 = self.Theme.Surface,
-        BorderSizePixel = 0,
+        BackgroundColor3 = self.Theme.SurfaceLight,
+        BorderColor3 = self.Theme.Border,
+        BorderSizePixel = 1,
         Parent = sliderFrame
     })
-
-    -- Adicionar borda ao track
-    self:AddGlow(sliderTrack)
 
     local sliderFill = self:CreateElement("Frame", {
         Name = "Fill",
@@ -711,13 +676,6 @@ end
 
 -- Sistema de notificação
 function MultiUI:Notify(message, type)
-    type = type or "Info"
-    
-    local color = self.Theme.Primary
-    if type == "Success" then color = self.Theme.Success
-    elseif type == "Warning" then color = self.Theme.Warning
-    elseif type == "Error" then color = self.Theme.Error end
-
     print("🔔 MultiUI:", message)
 end
 
