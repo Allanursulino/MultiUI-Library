@@ -1,6 +1,6 @@
 --[[
-   🎮 MultiUI Library - Professional Edition
-   Intro com efeito de digitação + Interface limpa
+   🎮 MultiUI Library - Final Edition
+   Exatamente como você pediu: vermelho/preto, bordas redondas, efeito digitação
    Por Allanursulino
 --]]
 
@@ -10,19 +10,19 @@ MultiUI.__index = MultiUI
 -- Configurações
 MultiUI.ToggleUIKey = Enum.KeyCode.RightControl
 
--- Tema Profissional
+-- Tema VERMELHO/PRETO como você pediu
 MultiUI.Theme = {
-    Background = Color3.fromRGB(13, 17, 23),      -- Fundo escuro azulado
-    Surface = Color3.fromRGB(22, 27, 34),         -- Superfície
-    SurfaceLight = Color3.fromRGB(33, 38, 45),    -- Superfície clara
-    Primary = Color3.fromRGB(88, 166, 255),       -- Azul profissional
-    PrimaryHover = Color3.fromRGB(108, 182, 255), -- Azul hover
-    TextPrimary = Color3.fromRGB(248, 250, 252),  -- Branco suave
-    TextSecondary = Color3.fromRGB(139, 148, 158),-- Cinza texto
-    Border = Color3.fromRGB(48, 54, 61),          -- Bordas
-    Success = Color3.fromRGB(87, 171, 90),        -- Verde
-    Warning = Color3.fromRGB(215, 158, 0),        -- Amarelo
-    Error = Color3.fromRGB(248, 81, 73)           -- Vermelho
+    Background = Color3.fromRGB(15, 15, 15),      -- Preto fundo
+    Surface = Color3.fromRGB(25, 25, 25),         -- Preto superfície
+    SurfaceLight = Color3.fromRGB(35, 35, 35),    -- Preto mais claro
+    Primary = Color3.fromRGB(220, 20, 60),        -- Vermelho vibrante
+    PrimaryHover = Color3.fromRGB(240, 40, 80),   -- Vermelho hover
+    TextPrimary = Color3.fromRGB(255, 255, 255),  -- Branco
+    TextSecondary = Color3.fromRGB(200, 200, 200),-- Cinza claro
+    Border = Color3.fromRGB(80, 0, 0),            -- Bordas vermelhas escuras
+    Success = Color3.fromRGB(0, 255, 0),          -- Verde
+    Warning = Color3.fromRGB(255, 165, 0),        -- Laranja
+    Error = Color3.fromRGB(255, 50, 50)           -- Vermelho erro
 }
 
 -- Serviços
@@ -42,7 +42,16 @@ function MultiUI:CreateElement(className, properties)
     return element
 end
 
--- Efeito de digitação (letra por letra)
+-- Criar cantos arredondados
+function MultiUI:AddRoundCorners(frame, cornerRadius)
+    local corners = self:CreateElement("UICorner", {
+        CornerRadius = UDim.new(0, cornerRadius or 8),
+        Parent = frame
+    })
+    return corners
+end
+
+-- Efeito de digitação CORRETO (letra por letra)
 function MultiUI:TypewriterEffect(label, text, speed, callback)
     label.Text = ""
     local currentText = ""
@@ -50,45 +59,46 @@ function MultiUI:TypewriterEffect(label, text, speed, callback)
     for i = 1, #text do
         currentText = currentText .. string.sub(text, i, i)
         label.Text = currentText
-        wait(speed or 0.05)
+        wait(speed or 0.08) -- Velocidade da digitação
     end
+    
+    -- Manter por 2 segundos como você pediu
+    wait(2)
     
     if callback then
         callback()
     end
 end
 
--- Intro com efeito de digitação
+-- Intro com efeito de digitação CORRETO
 function MultiUI:ShowIntroAnimation(callback)
     -- Tela de intro transparente
     local introFrame = self:CreateElement("Frame", {
         Name = "IntroFrame",
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundColor3 = Color3.new(0, 0, 0),
-        BackgroundTransparency = 0.3, -- Fundo semi-transparente
+        BackgroundTransparency = 0.2, -- Fundo semi-transparente
         BorderSizePixel = 0,
         Parent = self.ScreenGui
     })
 
-    -- Texto da intro
+    -- Texto da intro centralizado
     local introText = self:CreateElement("TextLabel", {
         Name = "IntroText",
-        Size = UDim2.new(0, 400, 0, 100),
-        Position = UDim2.new(0.5, -200, 0.5, -50),
+        Size = UDim2.new(0, 300, 0, 80),
+        Position = UDim2.new(0.5, -150, 0.5, -40),
         BackgroundTransparency = 1,
         Text = "",
-        TextColor3 = Color3.fromRGB(255, 255, 255),
+        TextColor3 = Color3.fromRGB(220, 20, 60), -- Vermelho
         TextScaled = true,
         Font = Enum.Font.GothamBlack,
         TextSize = 48,
-        TextStrokeTransparency = 0.5,
+        TextStrokeTransparency = 0.7,
         Parent = introFrame
     })
 
-    -- Efeito de digitação
+    -- Efeito de digitação CORRETO
     self:TypewriterEffect(introText, "MultiUI", 0.1, function()
-        wait(1) -- Manter texto por 1 segundo
-        
         -- Fade out suave
         local fadeOut = TweenService:Create(introFrame, TweenInfo.new(0.8), {
             BackgroundTransparency = 1
@@ -110,7 +120,7 @@ function MultiUI:CreateGUI()
 
     -- ScreenGui principal
     self.ScreenGui = self:CreateElement("ScreenGui", {
-        Name = "MultiUIProfessional",
+        Name = "MultiUIFinal",
         DisplayOrder = 999,
         ResetOnSpawn = false
     })
@@ -125,35 +135,58 @@ function MultiUI:CreateGUI()
     return self
 end
 
--- Criar interface principal (estilo da 3ª imagem)
+-- Criar interface principal MODERNA
 function MultiUI:CreateMainInterface()
-    -- Container principal (estilo profissional)
+    -- Container principal com BORDAS ARREDONDADAS
     self.MainContainer = self:CreateElement("Frame", {
         Name = "MainContainer",
-        Size = UDim2.new(0, 700, 0, 550), -- Tamanho maior para mais conteúdo
-        Position = UDim2.new(0.5, -350, 0.5, -275),
+        Size = UDim2.new(0, 600, 0, 450),
+        Position = UDim2.new(0.5, -300, 0.5, -225),
         BackgroundColor3 = self.Theme.Background,
-        BorderSizePixel = 1,
-        BorderColor3 = self.Theme.Border,
+        BorderSizePixel = 0,
         ClipsDescendants = true,
-        Visible = false, -- Inicia invisível
         Parent = self.ScreenGui
     })
 
-    -- Header limpo (sem título)
+    -- BORDAS ARREDONDADAS no container
+    self:AddRoundCorners(self.MainContainer, 12)
+
+    -- Header com SUA LOGO E NOME no canto esquerdo
     self.Header = self:CreateElement("Frame", {
         Name = "Header",
-        Size = UDim2.new(1, 0, 0, 5), -- Header mínimo
-        BackgroundColor3 = self.Theme.Primary,
+        Size = UDim2.new(1, 0, 0, 50),
+        BackgroundColor3 = self.Theme.Surface,
         BorderSizePixel = 0,
         Parent = self.MainContainer
     })
 
-    -- Área de navegação (tabs estilo profissional)
+    -- BORDAS ARREDONDADAS só na parte de cima do header
+    local headerCorners = self:CreateElement("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = self.Header
+    })
+    headerCorners.CornerRadius = UDim.new(0, 12)
+
+    -- SUA LOGO E NOME no canto superior esquerdo
+    self.Logo = self:CreateElement("TextLabel", {
+        Name = "Logo",
+        Size = UDim2.new(0, 150, 1, 0),
+        Position = UDim2.new(0, 15, 0, 0),
+        BackgroundTransparency = 1,
+        Text = "MultiUI Library", -- SEU NOME AQUI
+        TextColor3 = self.Theme.Primary, -- Vermelho
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Font = Enum.Font.GothamBlack,
+        TextSize = 16,
+        TextStrokeTransparency = 0.7,
+        Parent = self.Header
+    })
+
+    -- Área de navegação (tabs)
     self.NavArea = self:CreateElement("Frame", {
         Name = "NavArea",
         Size = UDim2.new(1, -30, 0, 40),
-        Position = UDim2.new(0, 15, 0, 15),
+        Position = UDim2.new(0, 15, 0, 60),
         BackgroundTransparency = 1,
         Parent = self.MainContainer
     })
@@ -167,24 +200,21 @@ function MultiUI:CreateMainInterface()
 
     self.TabsLayout = self:CreateElement("UIListLayout", {
         FillDirection = Enum.FillDirection.Horizontal,
-        Padding = UDim.new(0, 8),
+        Padding = UDim.new(0, 10),
         Parent = self.TabsContainer
     })
 
-    -- Área de conteúdo principal
+    -- Área de conteúdo
     self.ContentArea = self:CreateElement("Frame", {
         Name = "ContentArea",
-        Size = UDim2.new(1, -30, 1, -70),
-        Position = UDim2.new(0, 15, 0, 65),
+        Size = UDim2.new(1, -30, 1, -110),
+        Position = UDim2.new(0, 15, 0, 110),
         BackgroundTransparency = 1,
         Parent = self.MainContainer
     })
 
     -- Configurar eventos
     self:SetupEvents()
-    
-    -- Mostrar UI após criar
-    self.MainContainer.Visible = true
 end
 
 -- Configurar eventos
@@ -230,27 +260,29 @@ function MultiUI:MakeDraggable(dragPart, mainPart)
     end)
 end
 
--- Sistema de Tabs profissional
+-- Sistema de Tabs MODERNO com bordas arredondadas
 function MultiUI:CreateTab(tabName)
     if not self.Tabs then
         self.Tabs = {}
         self.TabContents = {}
     end
 
-    -- Botão da tab (estilo profissional)
+    -- Botão da tab COM BORDAS ARREDONDADAS
     local tabButton = self:CreateElement("TextButton", {
         Name = tabName .. "Tab",
-        Size = UDim2.new(0, 120, 1, 0),
+        Size = UDim2.new(0, 100, 1, 0),
         BackgroundColor3 = self.Theme.Surface,
-        BorderColor3 = self.Theme.Border,
-        BorderSizePixel = 1,
+        BorderSizePixel = 0,
         Text = tabName,
         TextColor3 = self.Theme.TextSecondary,
-        Font = Enum.Font.GothamMedium,
+        Font = Enum.Font.GothamSemibold,
         TextSize = 13,
         AutoButtonColor = false,
         Parent = self.TabsContainer
     })
+
+    -- BORDAS ARREDONDADAS na tab
+    self:AddRoundCorners(tabButton, 6)
 
     -- Conteúdo da tab
     local tabContent = self:CreateElement("ScrollingFrame", {
@@ -266,7 +298,7 @@ function MultiUI:CreateTab(tabName)
 
     -- Layout organizado
     local layout = self:CreateElement("UIListLayout", {
-        Padding = UDim.new(0, 12),
+        Padding = UDim.new(0, 15),
         Parent = tabContent
     })
 
@@ -289,12 +321,14 @@ function MultiUI:CreateTab(tabName)
     tabButton.MouseEnter:Connect(function()
         if self.CurrentTab ~= tabName then
             tabButton.BackgroundColor3 = self.Theme.SurfaceLight
+            tabButton.TextColor3 = self.Theme.TextPrimary
         end
     end)
 
     tabButton.MouseLeave:Connect(function()
         if self.CurrentTab ~= tabName then
             tabButton.BackgroundColor3 = self.Theme.Surface
+            tabButton.TextColor3 = self.Theme.TextSecondary
         end
     end)
 
@@ -313,7 +347,6 @@ function MultiUI:SwitchToTab(tabName)
         tab.Content.Visible = false
         tab.Button.BackgroundColor3 = self.Theme.Surface
         tab.Button.TextColor3 = self.Theme.TextSecondary
-        tab.Button.BorderSizePixel = 1
     end
 
     -- Ativar selecionada
@@ -322,25 +355,26 @@ function MultiUI:SwitchToTab(tabName)
         targetTab.Visible = true
         for _, tab in pairs(self.Tabs) do
             if tab.Name == tabName then
-                tab.Button.BackgroundColor3 = self.Theme.Primary
+                tab.Button.BackgroundColor3 = self.Theme.Primary -- Vermelho
                 tab.Button.TextColor3 = self.Theme.TextPrimary
-                tab.Button.BorderSizePixel = 0
             end
         end
         self.CurrentTab = tabName
     end
 end
 
--- Criar seção (estilo da 3ª imagem)
+-- Criar seção MODERNA com bordas arredondadas
 function MultiUI:CreateSection(tab, sectionName)
     local section = self:CreateElement("Frame", {
         Name = sectionName .. "Section",
         Size = UDim2.new(1, 0, 0, 60),
         BackgroundColor3 = self.Theme.Surface,
-        BorderColor3 = self.Theme.Border,
-        BorderSizePixel = 1,
+        BorderSizePixel = 0,
         Parent = tab.Content
     })
+
+    -- BORDAS ARREDONDADAS na seção
+    self:AddRoundCorners(section, 8)
 
     -- Título da seção
     local title = self:CreateElement("TextLabel", {
@@ -349,7 +383,7 @@ function MultiUI:CreateSection(tab, sectionName)
         Position = UDim2.new(0, 10, 0, 8),
         BackgroundTransparency = 1,
         Text = sectionName,
-        TextColor3 = self.Theme.TextPrimary,
+        TextColor3 = self.Theme.Primary, -- Vermelho
         TextXAlignment = Enum.TextXAlignment.Left,
         Font = Enum.Font.GothamBold,
         TextSize = 14,
@@ -366,7 +400,7 @@ function MultiUI:CreateSection(tab, sectionName)
     })
 
     local contentLayout = self:CreateElement("UIListLayout", {
-        Padding = UDim.new(0, 8),
+        Padding = UDim.new(0, 10),
         Parent = contentContainer
     })
 
@@ -378,48 +412,7 @@ function MultiUI:CreateSection(tab, sectionName)
     return contentContainer
 end
 
--- Criar linha de informação (como "Total All Pets: 4131")
-function MultiUI:CreateInfoRow(tab, label, value)
-    local row = self:CreateElement("Frame", {
-        Name = "InfoRow",
-        Size = UDim2.new(1, 0, 0, 25),
-        BackgroundTransparency = 1,
-        Parent = tab.Content
-    })
-
-    local labelText = self:CreateElement("TextLabel", {
-        Name = "Label",
-        Size = UDim2.new(0.6, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Text = label,
-        TextColor3 = self.Theme.TextSecondary,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.Gotham,
-        TextSize = 12,
-        Parent = row
-    })
-
-    local valueText = self:CreateElement("TextLabel", {
-        Name = "Value",
-        Size = UDim2.new(0.4, 0, 1, 0),
-        Position = UDim2.new(0.6, 0, 0, 0),
-        BackgroundTransparency = 1,
-        Text = tostring(value),
-        TextColor3 = self.Theme.TextPrimary,
-        TextXAlignment = Enum.TextXAlignment.Right,
-        Font = Enum.Font.GothamMedium,
-        TextSize = 12,
-        Parent = row
-    })
-
-    return {
-        Update = function(newValue)
-            valueText.Text = tostring(newValue)
-        end
-    }
-end
-
--- Componente Toggle profissional
+-- Componente Toggle MODERNO com bordas arredondadas
 function MultiUI:CreateToggle(section, options)
     options = options or {}
     
@@ -442,40 +435,45 @@ function MultiUI:CreateToggle(section, options)
         Parent = toggleFrame
     })
 
+    -- Toggle button COM BORDAS ARREDONDADAS
     local toggleButton = self:CreateElement("TextButton", {
         Name = "ToggleButton",
-        Size = UDim2.new(0, 45, 0, 22),
-        Position = UDim2.new(1, -45, 0, 4),
+        Size = UDim2.new(0, 50, 0, 25),
+        Position = UDim2.new(1, -50, 0, 2),
         BackgroundColor3 = self.Theme.SurfaceLight,
-        BorderColor3 = self.Theme.Border,
-        BorderSizePixel = 1,
+        BorderSizePixel = 0,
         Text = "",
         AutoButtonColor = false,
         Parent = toggleFrame
     })
 
+    -- BORDAS ARREDONDADAS no toggle
+    self:AddRoundCorners(toggleButton, 12)
+
+    -- Indicador do toggle COM BORDAS ARREDONDADAS
     local toggleIndicator = self:CreateElement("Frame", {
         Name = "Indicator",
-        Size = UDim2.new(0, 18, 0, 18),
+        Size = UDim2.new(0, 21, 0, 21),
         Position = UDim2.new(0, 2, 0, 2),
         BackgroundColor3 = self.Theme.TextSecondary,
         BorderSizePixel = 0,
         Parent = toggleButton
     })
 
+    -- BORDAS ARREDONDADAS no indicador
+    self:AddRoundCorners(toggleIndicator, 10)
+
     local state = options.Default or false
 
     local function updateToggle()
         if state then
-            toggleIndicator:TweenPosition(UDim2.new(1, -20, 0, 2), "Out", "Quad", 0.15)
+            toggleIndicator:TweenPosition(UDim2.new(1, -23, 0, 2), "Out", "Quad", 0.2)
             toggleIndicator.BackgroundColor3 = self.Theme.Success
             toggleButton.BackgroundColor3 = self.Theme.Success
-            toggleButton.BorderSizePixel = 0
         else
-            toggleIndicator:TweenPosition(UDim2.new(0, 2, 0, 2), "Out", "Quad", 0.15)
+            toggleIndicator:TweenPosition(UDim2.new(0, 2, 0, 2), "Out", "Quad", 0.2)
             toggleIndicator.BackgroundColor3 = self.Theme.TextSecondary
             toggleButton.BackgroundColor3 = self.Theme.SurfaceLight
-            toggleButton.BorderSizePixel = 1
         end
     end
 
@@ -500,41 +498,54 @@ function MultiUI:CreateToggle(section, options)
     }
 end
 
--- Componente Button profissional
+-- Componente Button MODERNO com RELEVO e bordas arredondadas
 function MultiUI:CreateButton(section, options)
     options = options or {}
     
+    -- Button COM BORDAS ARREDONDADAS
     local button = self:CreateElement("TextButton", {
         Name = "Button_" .. options.Name,
-        Size = UDim2.new(1, 0, 0, 35),
+        Size = UDim2.new(1, 0, 0, 40),
         BackgroundColor3 = self.Theme.SurfaceLight,
-        BorderColor3 = self.Theme.Border,
-        BorderSizePixel = 1,
+        BorderSizePixel = 0,
         Text = options.Name or "Button",
         TextColor3 = self.Theme.TextPrimary,
-        Font = Enum.Font.GothamMedium,
+        Font = Enum.Font.GothamSemibold,
         TextSize = 13,
         AutoButtonColor = false,
         Parent = section
     })
 
-    -- Efeitos hover
+    -- BORDAS ARREDONDADAS no botão
+    self:AddRoundCorners(button, 8)
+
+    -- Efeito de RELEVO (sombra interna)
+    local innerShadow = self:CreateElement("UIStroke", {
+        Color = Color3.new(0, 0, 0),
+        Thickness = 1,
+        Transparency = 0.8,
+        Parent = button
+    })
+
+    -- Efeitos hover com RELEVO
     button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = self.Theme.Primary
-        button.BorderSizePixel = 0
+        button.BackgroundColor3 = self.Theme.Primary -- Vermelho
+        innerShadow.Transparency = 0.9
     end)
 
     button.MouseLeave:Connect(function()
         button.BackgroundColor3 = self.Theme.SurfaceLight
-        button.BorderSizePixel = 1
+        innerShadow.Transparency = 0.8
     end)
 
     button.MouseButton1Down:Connect(function()
         button.BackgroundColor3 = self.Theme.PrimaryHover
+        innerShadow.Transparency = 0.7
     end)
 
     button.MouseButton1Up:Connect(function()
         button.BackgroundColor3 = self.Theme.Primary
+        innerShadow.Transparency = 0.9
     end)
 
     -- Callback
@@ -545,20 +556,20 @@ function MultiUI:CreateButton(section, options)
     return button
 end
 
--- Componente Slider profissional
+-- Componente Slider MODERNO com bordas arredondadas
 function MultiUI:CreateSlider(section, options)
     options = options or {}
     
     local sliderFrame = self:CreateElement("Frame", {
         Name = "Slider_" .. options.Name,
-        Size = UDim2.new(1, 0, 0, 55),
+        Size = UDim2.new(1, 0, 0, 60),
         BackgroundTransparency = 1,
         Parent = section
     })
 
     local labelRow = self:CreateElement("Frame", {
         Name = "LabelRow",
-        Size = UDim2.new(1, 0, 0, 20),
+        Size = UDim2.new(1, 0, 0, 25),
         BackgroundTransparency = 1,
         Parent = sliderFrame
     })
@@ -581,30 +592,37 @@ function MultiUI:CreateSlider(section, options)
         Position = UDim2.new(0.7, 0, 0, 0),
         BackgroundTransparency = 1,
         Text = tostring(options.Default or options.Min or 0),
-        TextColor3 = self.Theme.Primary,
+        TextColor3 = self.Theme.Primary, -- Vermelho
         TextXAlignment = Enum.TextXAlignment.Right,
         Font = Enum.Font.GothamMedium,
         TextSize = 13,
         Parent = labelRow
     })
 
+    -- Slider track COM BORDAS ARREDONDADAS
     local sliderTrack = self:CreateElement("Frame", {
         Name = "Track",
-        Size = UDim2.new(1, 0, 0, 18),
+        Size = UDim2.new(1, 0, 0, 20),
         Position = UDim2.new(0, 0, 0, 30),
         BackgroundColor3 = self.Theme.SurfaceLight,
-        BorderColor3 = self.Theme.Border,
-        BorderSizePixel = 1,
+        BorderSizePixel = 0,
         Parent = sliderFrame
     })
 
+    -- BORDAS ARREDONDADAS no track
+    self:AddRoundCorners(sliderTrack, 10)
+
+    -- Slider fill COM BORDAS ARREDONDADAS
     local sliderFill = self:CreateElement("Frame", {
         Name = "Fill",
         Size = UDim2.new(0.5, 0, 1, 0),
-        BackgroundColor3 = self.Theme.Primary,
+        BackgroundColor3 = self.Theme.Primary, -- Vermelho
         BorderSizePixel = 0,
         Parent = sliderTrack
     })
+
+    -- BORDAS ARREDONDADAS no fill
+    self:AddRoundCorners(sliderFill, 10)
 
     local min = options.Min or 0
     local max = options.Max or 100
